@@ -1,5 +1,5 @@
 [Unit]
-Description=Grafana
+Description=Mux Bot
 Requires=docker.service
 After=docker.service
 
