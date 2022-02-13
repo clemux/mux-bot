@@ -25,7 +25,7 @@ def receive_file(message: telebot.types.Message):
         return
     file_info = bot.get_file(message.document.file_id)
     logger.info(f"Got document: {file_info.file_path}")
-    _, ext = file_info.file_path.rsplit(".")
+    _, ext = file_info.file_path.rsplit(".", 1)
     unique_id = file_info.file_unique_id
     file_path = unique_id + "." + ext
     path = Path(BASE_DIR) / file_path
