@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sys
 from pathlib import Path
 
 import telebot
@@ -12,7 +13,11 @@ logger.setLevel(logging.INFO)
 BASE_DIR = os.getenv("MUX_BASE_DIR")
 BASE_URL = os.getenv("MUX_BASE_URL")
 BOT_TOKEN = os.getenv("MUX_BOT_TOKEN")
-ALLOWED_USERS = os.getenv("MUX_ALLOWED_USERS").split(',')
+try:
+    ALLOWED_USERS = os.getenv("MUX_ALLOWED_USERS").split(',')
+except AttributeError:
+    print("Missing MUX_ALLOWED_USERS variable")
+    sys.exit(1)
 
 
 bot = telebot.TeleBot(BOT_TOKEN)
