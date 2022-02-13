@@ -1,0 +1,12 @@
+[Unit]
+Description=Grafana
+Requires=docker.service
+After=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker run --rm --name=%n -v /var/www/html/files:/data --env-file /home/clemux/conf.env localhost/mux-bot:latest
+ExecStop=/usr/bin/docker rm -f %n
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
