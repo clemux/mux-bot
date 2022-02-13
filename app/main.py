@@ -10,7 +10,7 @@ logger = telebot.logger
 logger.setLevel(logging.INFO)
 
 BASE_DIR = os.getenv("MUX_BASE_DIR")
-BASE_URL = "https://home.mux.me/files/"
+BASE_URL = os.getenv("MUX_BASE_URL")
 BOT_TOKEN = os.getenv("MUX_BOT_TOKEN")
 ALLOWED_USERS = os.getenv("MUX_ALLOWED_USERS").split(',')
 
