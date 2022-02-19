@@ -1,6 +1,6 @@
 import os
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import requests
 
@@ -45,11 +45,14 @@ def get_arrivals(stop_refs):
     for j in journeys:
         datetime_string = j['MonitoredCall']['ExpectedArrivalTime']
         stop = j['MonitoredCall']['StopPointName']
+        eta = datetime.fromtimestamp(
+            datetime.fromisoformat(datetime_string).timestamp() - datetime.now().timestamp()
+        ).strftime('%M:%S')
         arrival = {
             'stop': stop,
             'line': j['LineRef'],
             'destination': j['DestinationName'],
-            'time': datetime.strptime(datetime_string, '%Y-%m-%dT%H:%M:%S%z')
+            'time': eta,
         }
         arrivals.append(arrival)
 
@@ -63,8 +66,7 @@ def main():
         refs.extend(line_ref)
     arrivals = get_arrivals(refs)
     for arrival in arrivals:
-        eta = arrival['time']
-        print(f"{arrival['stop']}: {arrival['line']} - {arrival['destination']} - {eta}")
+        print(f"{arrival['stop']}: {arrival['line']} - {arrival['destination']} - {arrival['time']}")
 
 
 if __name__ == '__main__':

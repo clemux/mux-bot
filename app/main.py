@@ -3,6 +3,7 @@
 import logging
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import telebot
@@ -53,9 +54,11 @@ def trams(message: telebot.types.Message):
         refs.extend(stop_refs)
         print(stop, stop_refs)
     arrivals = get_arrivals(refs)
+    arrivals_message = []
     for arrival in arrivals:
-        eta = arrival['time']
-        bot.reply_to(message, f"{arrival['line']} - {arrival['destination']} - {eta}")
+        eta = datetime.now() - datetime.fromisoformat(arrival['time'])
+        arrivals_message.append(f"{arrival['stop']}: {arrival['line']} - {arrival['destination']} - {eta}")
+    bot.reply_to(message, '\n'.join(arrivals_message))
 
 
 def main():
