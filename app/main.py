@@ -7,8 +7,11 @@ from pathlib import Path
 
 import telebot
 
+from app.cts import get_arrivals, get_stops
+
 logger = telebot.logger
 logger.setLevel(logging.INFO)
+
 
 BASE_DIR = os.getenv("MUX_BASE_DIR")
 BASE_URL = os.getenv("MUX_BASE_URL")
@@ -23,7 +26,6 @@ except AttributeError:
 bot = telebot.TeleBot(BOT_TOKEN)
 
 
-@bot.message_handler(content_types=['document'])
 def receive_file(message: telebot.types.Message):
     if message.from_user.username not in ALLOWED_USERS:
         bot.reply_to(message, "Not allowed")
@@ -41,7 +43,36 @@ def receive_file(message: telebot.types.Message):
     bot.reply_to(message, BASE_URL + unique_id + "." + ext)
 
 
+def trams(message: telebot.types.Message):
+    longitude = message.location.longitude
+    latitude = message.location.latitude
+
+    stops = get_stops(latitude=latitude, longitude=longitude)
+    refs = []
+    for stop, stop_refs in stops.items():
+        refs.extend(stop_refs)
+        print(stop, stop_refs)
+    arrivals = get_arrivals(refs)
+    for arrival in arrivals:
+        eta = arrival['time']
+        bot.reply_to(message, f"{arrival['line']} - {arrival['destination']} - {eta}")
+
+
 def main():
+    bot.add_message_handler({
+        'function': receive_file,
+        'pass_bot': False,
+        'filters': {
+            'content_types': ["document"],
+        },
+    })
+    bot.add_message_handler({
+        'function': trams,
+        'pass_bot': False,
+        'filters': {
+            'content_types': ["location"],
+        },
+    })
     bot.infinity_polling()
 
 
