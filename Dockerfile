@@ -1,4 +1,4 @@
-FROM fedora-minimal:latest
+FROM python:3
 
 WORKDIR /opt/mux-bot
 
@@ -6,10 +6,8 @@ COPY app/ app/
 COPY setup.cfg .
 COPY pyproject.toml .
 
-RUN microdnf -y install python3.10 && microdnf clean all
+RUN apt update && apt upgrade -y && apt install -y virtualenv
 
-RUN python3 -m venv venv
-RUN venv/bin/pip install -U pip
-RUN venv/bin/pip install .
+RUN virtualenv venv && venv/bin/pip install .
 
 ENTRYPOINT ["/opt/mux-bot/venv/bin/mux-bot"]
