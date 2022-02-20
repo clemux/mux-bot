@@ -56,8 +56,7 @@ def trams(message: telebot.types.Message):
     arrivals = get_arrivals(refs)
     arrivals_message = []
     for arrival in arrivals:
-        eta = datetime.now() - datetime.fromisoformat(arrival['time'])
-        arrivals_message.append(f"{arrival['stop']}: {arrival['line']} - {arrival['destination']} - {eta}")
+        arrivals_message.append(f"{arrival['stop']}: {arrival['line']} - {arrival['destination']} - {arrival['time']}")
     bot.reply_to(message, '\n'.join(arrivals_message))
 
 
